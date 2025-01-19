@@ -1,24 +1,26 @@
-//Recuperar todas las peliculas
+# PATCH  http://localhost:1234/movies/8
+# Content-Type: application/json
 
-PATCH  http://localhost:1234/movies/1
-Content-Type: application/json
-
-{
-        "year" : 2005,
-}
+# {
+#         "title": "La Anaconda",
+#         "director" : "Steven Spilberg"
+# }
 
 
-//Recuperar todas las peliculas por un genero
-GET http://localhost:1234/movies
+#  GET http://localhost:1234/movies
 
-//Metodo POST
-POST http://localhost:1234/movies 
-Content-Type: application/json
+
+# DELETE http://localhost:1234/movies/3
+
+
+
+ POST http://localhost:1234/movies 
+ Content-Type: application/json
 
 {
         "title" : "Locos Adams",
         "year" : 2023,
         "director": "Melocoton",
         "duration": 170,
-        "genre": ["Animacion"] 
+        "genre": ["Animacion"]
 }

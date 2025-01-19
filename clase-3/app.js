@@ -1,16 +1,15 @@
-const express = require('express')
+/*const express = require('express')
 const crypto = require('node:crypto')
 const movies = require('./movies.json')
 const {validateMovie } = require('./schemas/movies')
 const z = require('zod')
 
 const app = express()
-app.use(express.json())
+app.use(express.json()) //middleware
 
 app.disable('x-powered-by')
 
 
-// ** PETICIONES **//
 
 app.get('/movies', (req,res)=>{
     res.status(200).json(movies)
@@ -74,11 +73,69 @@ app.patch('/movies/:id', (req, res)=>{
 
 })
 
-//** FIN PETICIONES */
 
 
 const PORT = process.env.PORT ?? 1234
 
 app.listen(PORT, ()=>{
     console.log(`server listening on port http://localhost:${PORT}`)
-} )
+} ) */
+
+    const express = require('express')
+    const crypto = require('node:crypto')
+    const {validationMoviesPractice} = require('./schemas/moviesPractice')
+    const movies = require('./movies.json')
+    const app = express()
+    app.use(express.json())
+
+    app.get('/movies', (req, res)=>{
+        res.json(movies)
+    })
+
+    app.post('/movies', (req,res)=>{
+        const result = validationMoviesPractice(req.body)
+        if(!result) return res.status(400).json(result.error)
+    
+        const newMovie = {
+            "id" : crypto.randomUUID(),
+            ...result.data
+        }
+
+        movies.push(newMovie)
+        return res.status(201).json(movies)
+    })
+
+   app.patch('/movies/:id', (req,res)=>{
+    const {id} = req.params
+    const result = req.body
+
+    const movieIndex = movies.findIndex(movie => movie.id == id)
+
+    if(movieIndex == -1) return res.status(404).json({"error": "Movie not found"})
+
+    const movieUpdated = {
+        ...movies[movieIndex],
+        ...result
+    }
+
+    movies[movieIndex] = movieUpdated
+
+    return res.status(200).json(movies)
+   }) 
+
+   app.delete('/movies/:id', (req,res)=>{
+    const {id} = req.params
+    const movieIndex = movies.findIndex(movie=>movie.id == id)
+
+    movies.splice(movieIndex,1)
+
+    return res.status(203).json(movies)
+
+   })
+
+
+    const PORT = process.env.PORT ?? 1234
+
+    app.listen(PORT, ()=>{
+        console.log(`Listening in https://localhost:${PORT}`)
+    })
